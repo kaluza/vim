@@ -3,16 +3,20 @@
 " .vimrc
 
 " ctags location
-" set tags=tags;/another/path/
-set tags=tags;/Users/brian/Shared/trunk:/Users/brian/Engineering/veros/foresight/trunk/VerosGui
-"
+set tags=tags;$DEVEL_TAG_DIRS
+
 execute pathogen#infect()
 
+" set nocompatible b/c some plugins will not work:
 set nocompatible
+" dont detect file type, leave this to plugins:
 filetype off
+" run time path:
 set rtp+=~/.vim/bundle/vundle/
+" vundle#rc can take one optional string argument to change the default prefix where all the plugins are installed:
 call vundle#rc()
-Bundle 'Valloric/YouCompleteMe'
+
+Bundle 'davidhalter/jedi-vim'
 Bundle 'scrooloose/nerdtree'
 Bundle 'gmarik/vundle'
 Bundle 'vim-scripts/Tagbar'
@@ -28,9 +32,16 @@ Bundle 'bling/vim-airline'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'flazz/vim-colorschemes'
 
+" NERDtree configuration -- load if vim is opened without file name. Toggle
+" with C-g
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+map <C-g> :NERDTreeToggle<CR>
+
+map <C-h> :Tagbar<CR>
+
 colorscheme molokai
 
-""""""""
 if has('autocmd')
   filetype plugin indent on
 endif
@@ -172,15 +183,17 @@ if filereadable(expand("~/.vimrc.local"))
 endif
 
 
-" disable paset commands
-inoremap <silent> <F4> <c -O>:call SmartIndentToggle()<cr>
-map <silent> <F4> :call SmartIndentToggle()<cr>
+" disable paste commands
+inoremap <silent> <F7> <c -O>:call SmartIndentToggle()<cr>
+map <silent> <F7> :call SmartIndentToggle()<cr>
 function SmartIndentToggle()
     if &autoindent == 1
+        echo "Smart Indent Enabled"
         set paste
         set noautoindent
         set nosmarttab
     else
+        echo "Smart Indent Enabled"
         set nopaste
         set autoindent
         set smarttab
@@ -193,8 +206,23 @@ map <silent> <F5> :call SpellToggle()<cr>
 function SpellToggle()
     if &spell == 1
         set nospell
+        echo "Spell Checker Disabled"
     else
         set spell
+        echo "Spell Checker Enabled"
+    endif
+endfunction
+
+"map <F6> :let &background = (&background == "light" ? "dark" : "light" ) <CR>
+inoremap <silent> <F6> <c -O>:call ToggleColorScheme()<cr>
+map <silent> <F6> :call ToggleColorScheme()<cr>
+function ToggleColorScheme()
+    if &background == "light"
+        let &background = "dark"
+        echo "Assuming dark background"
+    else
+        let &background = "light"
+        echo "Assuming light background"
     endif
 endfunction
 
@@ -210,7 +238,6 @@ function! ResCur()
         autocmd BufWinEnter * call ResCur()
     augroup END
 
-map <F6> :let &background = (&background == "light" ? "dark" : "light" ) <CR>
 
 " Tell vim to remember certain things when we exit
 " "  '10  :  marks will be remembered for up to 10 previously edited files
