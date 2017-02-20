@@ -249,3 +249,7 @@ set viminfo='10,\"100,:20,%,n~/.viminfo
 
 let g:syntastic_cpp_compiler = 'clang++'
 let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+
+" Add template to every python file
+ au BufNewFile *.py 0r ~/.vim/templates/python_template.py
+ au BufNewFile *.h 0r ~/.vim/templates/c_template.h
