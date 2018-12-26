@@ -12,9 +12,9 @@ set nocompatible
 " dont detect file type, leave this to plugins:
 filetype off
 " run time path:
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/Vundle.vim
 " vundle#rc can take one optional string argument to change the default prefix where all the plugins are installed:
-call vundle#rc()
+call vundle#begin()
 
 Bundle 'davidhalter/jedi-vim'
 Bundle 'scrooloose/nerdtree'
